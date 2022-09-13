@@ -14,6 +14,7 @@ use Weidner\Goutte\GoutteFacade;
 trait DokkanScrapingTrait
 {
     protected $total = 0;
+    protected $progressBar;
 
     public function get_dokkan_data()
     {
@@ -21,32 +22,64 @@ trait DokkanScrapingTrait
 
         $this->get_categories($crawler);
         $this->get_links($crawler);
+        $this->get_total_count($crawler);
         $this->get_cards($crawler);
+    }
+
+    function get_total_count($crawler)
+    {
+        $this->total = 0;
+
+        $crawler->filter('.character')->each(function ($node) {
+            if ($node->attr('data-name')) {
+                $this->total++;
+            }
+        });
+
+        $this->progressBar = $this->output->createProgressBar($this->total);
+        $this->progressBar->setFormat('%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%');
+        $this->progressBar->start();
     }
 
     function get_cards($crawler)
     {
         $crawler->filter('.character')->each(function ($node) {
             if ($node->attr('data-name')) {
-                $this->total++;
 
-                Card::updateOrCreate(
+                $dokkan_id = $node->attr('data-id') + 1;
+
+                $card = Card::updateOrCreate(
                     [
-                        'dokkan_id' => $node->attr('data-id') + 1
+                        'dokkan_id' => $dokkan_id
                     ],
                     [
                         'name' => $node->attr('data-name'),
-                        'dokkan_id' => $node->attr('data-id') + 1,
+                        'dokkan_id' => $dokkan_id,
                         'image' => $node->filter('img')->attr('src'),
                         'rarity_id' => Rarity::where('name', $node->attr('data-rarity'))->first()->id,
                         'type_id' => Type::where('name', $node->attr('data-class'))->first()->id,
                         'element_id' => Element::where('name', $node->attr('data-type'))->first()->id,
                     ]
                 );
+
+                $categories = array_values(array_filter(explode('-', str_replace(str_split('[]'), '-', $node->attr('data-categories')))));
+
+                foreach ($categories as $category) {
+                    $card->categories()->syncWithoutDetaching(Category::where('dokkan_id', $category)->first()->id);
+                }
+
+                $links = array_values(array_filter(explode('-', str_replace(str_split('[]'), '-', $node->attr('data-links')))));
+
+                foreach ($links as $link) {
+                    $card->links()->syncWithoutDetaching(Link::where('dokkan_id', $link)->first()->id);
+                }
+
+                $this->progressBar->advance();
             }
         });
 
-        $this->info($this->total . ' cards updated');
+        $this->progressBar->finish();
+        $this->info("\nCards updated");
     }
 
     function get_categories($crawler)
