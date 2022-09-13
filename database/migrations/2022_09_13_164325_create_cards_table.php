@@ -18,6 +18,9 @@ class CreateCardsTable extends Migration
             $table->integer('dokkan_id')->unique();
             $table->string('name');
             $table->string('image');
+            $table->foreignId('type_id')->constrained();
+            $table->foreignId('element_id')->constrained();
+            $table->foreignId('rarity_id')->constrained();
             $table->timestamps();
         });
     }

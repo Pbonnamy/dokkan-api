@@ -4,7 +4,10 @@ namespace App\Traits;
 
 use App\Models\Card;
 use App\Models\Category;
+use App\Models\Element;
 use App\Models\Link;
+use App\Models\Rarity;
+use App\Models\Type;
 use Illuminate\Support\Facades\Log;
 use Weidner\Goutte\GoutteFacade;
 
@@ -18,6 +21,7 @@ trait DokkanScrapingTrait
 
         $this->get_categories($crawler);
         $this->get_links($crawler);
+        $this->get_cards($crawler);
     }
 
     function get_cards($crawler)
@@ -33,11 +37,16 @@ trait DokkanScrapingTrait
                     [
                         'name' => $node->attr('data-name'),
                         'dokkan_id' => $node->attr('data-id') + 1,
-                        'image' => $node->filter('img')->attr('src')
+                        'image' => $node->filter('img')->attr('src'),
+                        'rarity_id' => Rarity::where('name', $node->attr('data-rarity'))->first()->id,
+                        'type_id' => Type::where('name', $node->attr('data-class'))->first()->id,
+                        'element_id' => Element::where('name', $node->attr('data-type'))->first()->id,
                     ]
                 );
             }
         });
+
+        $this->info($this->total . ' cards updated');
     }
 
     function get_categories($crawler)
