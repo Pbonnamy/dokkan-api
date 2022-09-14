@@ -62,6 +62,8 @@ trait DokkanScrapingTrait
                     ]
                 );
 
+                $this->get_card_details($dokkan_id);
+
                 $categories = array_values(array_filter(explode('-', str_replace(str_split('[]'), '-', $node->attr('data-categories')))));
 
                 foreach ($categories as $category) {
@@ -119,5 +121,45 @@ trait DokkanScrapingTrait
         });
 
         $this->info('Links updated');
+    }
+
+    public function get_card_details($dokkan_id)
+    {
+
+        $card = Card::where('dokkan_id', $dokkan_id)->first();
+        $crawler = GoutteFacade::request('GET', 'https://dokkan.fyi/characters/' . $dokkan_id);
+
+        if ($crawler->filter('#app')->count() !== 0) {
+            $details = $crawler->filter('#app')->first()->attr('data-page');
+            $details = json_decode($details, true);
+
+            $skills = $details['props']['card']['optimal_awakening_growths'];
+
+            if (count($skills) !== 0) {
+                Log::info($details);
+                exit;
+            }
+            
+            $card->update([
+                'leader_skill' => count($skills) > 0 ? $skills[count($skills) - 1]['leader_skill_set']['description'] : null,
+                'passive_skill' => count($skills) > 0 ? $skills[count($skills) - 1]['passive_skill_set']['description'] : null,
+
+                'cost' => $details['props']['card']['cost'],
+
+                'def_init' => $details['props']['card']['def_init'],
+                'def_max' => $details['props']['card']['def_max'],
+                'def_eza' => $details['props']['card']['def_eza'],
+
+                'atk_init' => $details['props']['card']['atk_init'],
+                'atk_max' => $details['props']['card']['atk_max'],
+                'atk_eza' => $details['props']['card']['atk_eza'],
+
+                'hp_init' => $details['props']['card']['hp_init'],
+                'hp_max' => $details['props']['card']['hp_max'],
+                'hp_eza' => $details['props']['card']['hp_eza'],
+            ]);
+        } else {
+            Log::info('Card not found: ' . $dokkan_id . ' - ' . $card->name);
+        }
     }
 }
