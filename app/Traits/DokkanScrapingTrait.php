@@ -133,30 +133,29 @@ trait DokkanScrapingTrait
             $details = $crawler->filter('#app')->first()->attr('data-page');
             $details = json_decode($details, true);
 
-            $skills = $details['props']['card']['optimal_awakening_growths'];
-
-            if (count($skills) !== 0) {
-                Log::info($details);
-                exit;
-            }
+            $eza_skills = $details['props']['card']['optimal_awakening_growths'];
+            $eza = (count($eza_skills) === 0 ? false : true);
             
             $card->update([
-                'leader_skill' => count($skills) > 0 ? $skills[count($skills) - 1]['leader_skill_set']['description'] : null,
-                'passive_skill' => count($skills) > 0 ? $skills[count($skills) - 1]['passive_skill_set']['description'] : null,
+                'leader_skill' => $details['props']['card']['leader_skill_set']['description'],
+                'passive_skill' => $details['props']['card']['leader_skill_set']['description'],
+                'leader_skill_eza' => $eza ? $eza_skills[count($eza_skills) - 1]['leader_skill_set']['description'] : null,
+                'eza_passive_skill_eza' => $eza ? $eza_skills[count($eza_skills) - 1]['passive_skill_set']['description'] : null,
+                'has_eza' => $eza,
 
                 'cost' => $details['props']['card']['cost'],
 
                 'def_init' => $details['props']['card']['def_init'],
                 'def_max' => $details['props']['card']['def_max'],
-                'def_eza' => $details['props']['card']['def_eza'],
+                'def_eza' => $eza ? $details['props']['card']['def_eza'] : null,
 
                 'atk_init' => $details['props']['card']['atk_init'],
                 'atk_max' => $details['props']['card']['atk_max'],
-                'atk_eza' => $details['props']['card']['atk_eza'],
+                'atk_eza' => $eza ? $details['props']['card']['atk_eza']: null,
 
                 'hp_init' => $details['props']['card']['hp_init'],
                 'hp_max' => $details['props']['card']['hp_max'],
-                'hp_eza' => $details['props']['card']['hp_eza'],
+                'hp_eza' => $eza ? $details['props']['card']['hp_eza'] : null,
             ]);
         } else {
             Log::info('Card not found: ' . $dokkan_id . ' - ' . $card->name);
