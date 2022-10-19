@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\dokkan\ElementsSeeder;
+use Database\Seeders\dokkan\RaritiesSeeder;
+use Database\Seeders\dokkan\TypesSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
