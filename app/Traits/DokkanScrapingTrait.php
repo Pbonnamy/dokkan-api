@@ -2,12 +2,12 @@
 
 namespace App\Traits;
 
-use App\Models\Card;
-use App\Models\Category;
-use App\Models\Element;
-use App\Models\Link;
-use App\Models\Rarity;
-use App\Models\Type;
+use App\Models\Dokkan\Card;
+use App\Models\Dokkan\Category;
+use App\Models\Dokkan\Element;
+use App\Models\Dokkan\Link;
+use App\Models\Dokkan\Rarity;
+use App\Models\Dokkan\Type;
 use Illuminate\Support\Facades\Log;
 use Weidner\Goutte\GoutteFacade;
 

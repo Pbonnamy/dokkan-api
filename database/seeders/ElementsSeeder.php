@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Element;
+use App\Models\Dokkan\Element;
 use Illuminate\Database\Seeder;
 
 class ElementsSeeder extends Seeder

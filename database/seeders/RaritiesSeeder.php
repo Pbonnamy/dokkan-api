@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Rarity;
+use App\Models\Dokkan\Rarity;
 use Illuminate\Database\Seeder;
 
 class RaritiesSeeder extends Seeder

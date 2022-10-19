@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Dokkan;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Rarity extends Model
+class Category extends Model
 {
     public $timestamps = false;
     protected $guarded = ['id'];

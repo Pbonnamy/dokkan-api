@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Type;
+use App\Models\Dokkan\Type;
 use Illuminate\Database\Seeder;
 
 class TypesSeeder extends Seeder
