@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Clients\DokkanClient;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +14,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(DokkanClient::class, function () {
+            $config = config('services.dokkan');
+            return new DokkanClient($config['url'], $config['version']);
+        });
     }
 
     /**

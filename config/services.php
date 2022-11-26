@@ -30,4 +30,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'dokkan' => [
+        'url' => env('DOKKAN_URL'),
+        'version' => env('DOKKAN_VERSION'),
+    ],
 ];

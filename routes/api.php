@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Dokkan\CardController;
-use Illuminate\Http\Request;
+use App\Clients\DokkanClient;
+use App\Http\Controllers\DokkanApi\CardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +15,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/cards', [CardController::class, 'index']);
+Route::get('/health', function () {
+    return response()->json(['status' => 'ok']);
+});
+
+Route::prefix('dokkan-api')->group(function () {
+    Route::get('/cards', [CardController::class, 'index']);
+});
+
+Route::prefix('dokkan-bot')->group(function () {
+
+    Route::get('/health', function () {
+        try {
+            app(DokkanClient::class)->ping();
+            return response()->json(['status' => 'ok']);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    });
+
+});

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Dokkan;
+namespace App\Http\Controllers\DokkanApi;
 
 use App\Http\Controllers\Controller;
-use App\Models\Dokkan\Card;
+use App\Models\DokkanApi\Card;
 use Illuminate\Http\Request;
 
 class CardController extends Controller

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\dokkan;
+namespace Database\Seeders\dokkanApi;
 
 use App\Models\Dokkan\Rarity;
 use Illuminate\Database\Seeder;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Dokkan;
+namespace App\Models\DokkanApi;
 
 use Illuminate\Database\Eloquent\Model;
 
