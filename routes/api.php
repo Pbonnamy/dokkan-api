@@ -2,6 +2,7 @@
 
 use App\Clients\DokkanClient;
 use App\Http\Controllers\DokkanApi\CardController;
+use App\Http\Controllers\DokkanBot\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,4 +35,5 @@ Route::prefix('dokkan-bot')->group(function () {
         }
     });
 
+    Route::post('/signup', [AuthController::class, 'signup']);
 });
