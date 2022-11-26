@@ -25,7 +25,7 @@ Route::prefix('dokkan-api')->group(function () {
 
 Route::prefix('dokkan-bot')->group(function () {
 
-    Route::get('/health', function () {
+    Route::get('/ping', function () {
         try {
             app(DokkanClient::class)->ping();
             return response()->json(['status' => 'ok']);
